@@ -8,7 +8,7 @@ require (
 	fyne.io/fyne/v2 v2.7.2
 	github.com/dghubble/oauth1 v0.7.3
 	github.com/google/uuid v1.6.0
-	github.com/muktihari/fit v0.27.1
+	github.com/muktihari/fit v0.28.7
 )
 
 require (
