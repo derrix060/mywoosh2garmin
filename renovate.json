@@ -3,32 +3,38 @@
   "extends": [
     "config:recommended",
     "helpers:pinGitHubActionDigests",
+    "group:allNonMajor",
     ":automergeMinor",
     ":automergeDigest"
   ],
-  "platformAutomerge": false,
   "minimumReleaseAge": "7 days",
   "packageRules": [
     {
-      "matchManagers": ["github-actions"],
-      "automerge": false
-    },
-    {
-      "matchCurrentVersion": "/^v?0\\./",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "github actions",
       "automerge": false
     }
   ],
-  "postUpdateOptions": ["gomodTidy"],
+  "postUpdateOptions": [
+    "gomodTidy"
+  ],
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
     "enabled": true,
-    "automerge": true
+    "automerge": true,
+    "groupName": "security fixes"
   },
   "customManagers": [
     {
       "customType": "regex",
-      "managerFilePatterns": ["/^Makefile$/"],
-      "matchStrings": ["GOVULNCHECK_VER := (?<currentValue>v\\S+)"],
+      "managerFilePatterns": [
+        "/^Makefile$/"
+      ],
+      "matchStrings": [
+        "GOVULNCHECK_VER := (?<currentValue>v\\S+)"
+      ],
       "depNameTemplate": "golang.org/x/vuln",
       "datasourceTemplate": "go"
     }
