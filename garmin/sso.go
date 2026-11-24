@@ -15,10 +15,13 @@ import (
 	"github.com/dghubble/oauth1"
 )
 
-const (
-	oauthConsumerURL = "https://thegarth.s3.amazonaws.com/oauth_consumer.json"
-	ssoUserAgent     = "com.garmin.android.apps.connectmobile"
-)
+const ssoUserAgent = "com.garmin.android.apps.connectmobile"
+
+// OAuth1 consumer embedded in the Garmin Connect Android app (libsr.so, v5.31.1).
+var consumer = &oauthConsumer{
+	ConsumerKey:    "fc3e99d2-118c-44b8-8ae3-03370dde24c0",
+	ConsumerSecret: "E08WAR897WEy2knn7aFBrvegVAf0AFdWBBF",
+}
 
 var (
 	csrfRe   = regexp.MustCompile(`name="_csrf"\s+value="(.+?)"`)
@@ -107,12 +110,6 @@ func Login(email, password, domain string) (*OAuth1Token, *OAuth2Token, error) {
 		domain = "garmin.com"
 	}
 
-	// 1. Fetch OAuth consumer credentials from Garmin's S3 bucket
-	consumer, err := fetchConsumer()
-	if err != nil {
-		return nil, nil, fmt.Errorf("fetch consumer: %w", err)
-	}
-
 	// 2. Start SSO session with cookie jar
 	sess := newSSOSession()
 
@@ -135,7 +132,7 @@ func Login(email, password, domain string) (*OAuth1Token, *OAuth2Token, error) {
 	}
 
 	// 3. GET /sso/embed — set cookies
-	_, err = sess.get(ssoEmbed+"?"+embedParams.Encode(), false)
+	_, err := sess.get(ssoEmbed+"?"+embedParams.Encode(), false)
 	if err != nil {
 		return nil, nil, fmt.Errorf("sso embed: %w", err)
 	}
@@ -209,10 +206,6 @@ func Login(email, password, domain string) (*OAuth1Token, *OAuth2Token, error) {
 
 // ExchangeForOAuth2 refreshes the OAuth2 token using an existing OAuth1 token.
 func ExchangeForOAuth2(oauth1Token *OAuth1Token) (*OAuth2Token, error) {
-	consumer, err := fetchConsumer()
-	if err != nil {
-		return nil, fmt.Errorf("fetch consumer: %w", err)
-	}
 	domain := oauth1Token.Domain
 	if domain == "" {
 		domain = "garmin.com"
@@ -223,22 +216,6 @@ func ExchangeForOAuth2(oauth1Token *OAuth1Token) (*OAuth2Token, error) {
 // ---------------------------------------------------------------------------
 // Internal helpers
 // ---------------------------------------------------------------------------
-
-func fetchConsumer() (*oauthConsumer, error) {
-	resp, err := http.Get(oauthConsumerURL)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf("consumer fetch HTTP %d", resp.StatusCode)
-	}
-	var c oauthConsumer
-	if err := json.NewDecoder(resp.Body).Decode(&c); err != nil {
-		return nil, err
-	}
-	return &c, nil
-}
 
 func getOAuth1Token(consumer *oauthConsumer, ticket, domain string) (*OAuth1Token, error) {
 	// OAuth1 signed with consumer-only (empty token)
