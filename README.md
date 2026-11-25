@@ -50,10 +50,10 @@ After the first login, a session token is cached locally (`~/.mywhoosh2garmin/`)
 
 ### 3. Fetch Activities
 
-Click **📋 Fetch Activities (last 10 days)** and the app will:
+Click **📋 Fetch Activities** and the app will:
 
 1. Log in to your MyWhoosh account (or resume a cached session)
-2. Fetch your activities from the last 10 days
+2. Fetch all your activities
 3. Display them in a list showing date, title, distance, duration, power, and heart rate — with an upload button next to each one
 
 ### 4. Upload to Garmin

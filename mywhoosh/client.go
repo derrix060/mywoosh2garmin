@@ -293,27 +293,6 @@ func (c *Client) GetActivities() ([]Activity, error) {
 	return allActivities, nil
 }
 
-// GetRecentActivities returns activities from the last N days.
-func (c *Client) GetRecentActivities(days int) ([]Activity, error) {
-	all, err := c.GetActivities()
-	if err != nil {
-		return nil, err
-	}
-
-	cutoff := time.Now().AddDate(0, 0, -days).Unix()
-	var recent []Activity
-	for _, a := range all {
-		if a.DateUnix() >= cutoff {
-			recent = append(recent, a)
-		} else {
-			// Activities are sorted DESC, so once we pass the cutoff we can stop
-			break
-		}
-	}
-
-	return recent, nil
-}
-
 // DownloadFitFile downloads the FIT file for a given activity and returns the raw bytes.
 func (c *Client) DownloadFitFile(activityFileID string) ([]byte, error) {
 	if c.token == "" {

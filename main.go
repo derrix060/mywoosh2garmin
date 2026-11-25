@@ -324,7 +324,7 @@ func main() {
 
 	// --- Fetch Activities button ---
 	var fetching bool
-	fetchBtn := widget.NewButton("📋  Fetch Activities (last 10 days)", nil)
+	fetchBtn := widget.NewButton("📋  Fetch Activities", nil)
 	fetchBtn.Importance = widget.HighImportance
 
 	fetchBtn.OnTapped = func() {
@@ -367,9 +367,9 @@ func main() {
 				mwStatusLabel.SetText("✓ MyWhoosh connected")
 			})
 
-			// 2. Fetch activities from last 10 days
-			appendLog("Fetching activities (last 10 days)…")
-			activities, err := mwClient.GetRecentActivities(10)
+			// 2. Fetch all activities
+			appendLog("Fetching activities…")
+			activities, err := mwClient.GetActivities()
 			if err != nil {
 				// Token may be expired — try fresh login
 				email := mwEmailEntry.Text
@@ -377,7 +377,7 @@ func main() {
 				if email != "" && password != "" {
 					appendLog("Session may be expired, retrying login…")
 					if loginErr := mwClient.Login(email, password); loginErr == nil {
-						activities, err = mwClient.GetRecentActivities(10)
+						activities, err = mwClient.GetActivities()
 					}
 				}
 				if err != nil {
@@ -387,10 +387,10 @@ func main() {
 			}
 
 			if len(activities) == 0 {
-				appendLog("No activities found in the last 10 days.")
+				appendLog("No activities found.")
 				fyne.Do(func() {
 					activityListBox.RemoveAll()
-					activityListBox.Add(widget.NewLabel("No activities found in the last 10 days."))
+					activityListBox.Add(widget.NewLabel("No activities found."))
 				})
 				return
 			}
@@ -562,7 +562,7 @@ func main() {
 
 	activitiesHeader := container.NewBorder(nil, nil, nil,
 		uploadAllBtn,
-		widget.NewRichTextFromMarkdown("### Activities (last 10 days)"),
+		widget.NewRichTextFromMarkdown("### Activities"),
 	)
 
 	topForm := container.NewVBox(
