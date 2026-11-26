@@ -27,6 +27,8 @@ import (
 type appConfig struct {
 	MyWhooshEmail string `json:"mywhoosh_email"`
 	GarminEmail   string `json:"garmin_email"`
+
+	RememberPasswords bool `json:"remember_passwords"`
 }
 
 func appConfigDir() string {
@@ -159,6 +161,32 @@ func main() {
 	garminPasswordEntry := widget.NewPasswordEntry()
 	garminPasswordEntry.SetPlaceHolder("Garmin password (only needed first time)")
 
+	if cfg.RememberPasswords {
+		mwPasswordEntry.SetText(loadPassword(keyringMyWhoosh))
+		garminPasswordEntry.SetText(loadPassword(keyringGarmin))
+	}
+
+	rememberCheck := widget.NewCheck("Remember passwords in the system keychain", nil)
+	rememberCheck.SetChecked(cfg.RememberPasswords)
+	rememberFn := func(account, password string) {
+		if !rememberCheck.Checked {
+			return
+		}
+		if err := savePassword(account, password); err != nil {
+			appendLog("⚠ Could not save password to keychain: " + err.Error())
+		}
+	}
+	rememberCheck.OnChanged = func(on bool) {
+		cfg.RememberPasswords = on
+		saveAppConfig(cfg)
+		if !on {
+			deletePasswords()
+			return
+		}
+		rememberFn(keyringMyWhoosh, mwPasswordEntry.Text)
+		rememberFn(keyringGarmin, garminPasswordEntry.Text)
+	}
+
 	// --- Activity list container ---
 	activityListBox := container.NewVBox()
 	activityScroll := container.NewVScroll(activityListBox)
@@ -190,6 +218,7 @@ func main() {
 		if err := client.Login(email, password); err != nil {
 			return nil, fmt.Errorf("Garmin login failed: %w", err)
 		}
+		rememberFn(keyringGarmin, password)
 
 		garminClient = client
 		return client, nil
@@ -362,6 +391,7 @@ func main() {
 					return
 				}
 				appendLog("✓ Logged in to MyWhoosh")
+				rememberFn(keyringMyWhoosh, password)
 			}
 			fyne.Do(func() {
 				mwStatusLabel.SetText("✓ MyWhoosh connected")
@@ -377,6 +407,7 @@ func main() {
 				if email != "" && password != "" {
 					appendLog("Session may be expired, retrying login…")
 					if loginErr := mwClient.Login(email, password); loginErr == nil {
+						rememberFn(keyringMyWhoosh, password)
 						activities, err = mwClient.GetRecentActivities(10)
 					}
 				}
@@ -569,6 +600,7 @@ func main() {
 		title,
 		widget.NewSeparator(),
 		credentialsRow,
+		rememberCheck,
 		widget.NewSeparator(),
 		fetchBtn,
 		widget.NewSeparator(),

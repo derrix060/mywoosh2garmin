@@ -9,6 +9,7 @@ require (
 	github.com/dghubble/oauth1 v0.7.3
 	github.com/google/uuid v1.6.0
 	github.com/muktihari/fit v0.28.7
+	github.com/zalando/go-keyring v0.2.8
 )
 
 require (
@@ -16,6 +17,7 @@ require (
 	github.com/BurntSushi/toml v1.6.0 // indirect
 	github.com/anthonynsimon/bild v0.14.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.2.0 // indirect
+	github.com/danieljoos/wincred v1.2.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/fyne-io/gl-js v0.2.1-0.20260315212741-029c47fd27e8 // indirect
