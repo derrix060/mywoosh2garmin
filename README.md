@@ -58,6 +58,10 @@ Enter your **Garmin Connect email** and **password**. These are only sent direct
 
 After the first login, a session token is cached locally (`~/.mywhoosh2garmin/`) and reused for up to a year. You won't need to enter your password again unless the token expires.
 
+### Remember passwords (optional)
+
+Tick **Remember passwords in the system keychain** to store both passwords in macOS Keychain, Windows Credential Manager, or the Linux Secret Service. They are filled in on every launch and used to log in again when a cached session expires. Untick it to delete them from the keychain.
+
 ### 3. Fetch Activities
 
 Click **📋 Fetch Activities (last 10 days)** and the app will:
