@@ -38,7 +38,7 @@ jobs:
       - name: Install Linux build deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc libgl-dev xorg-dev libxxf86vm-dev
+          sudo apt-get install -y gcc libgl-dev xorg-dev libxxf86vm-dev libwayland-dev libxkbcommon-dev libegl-dev
 
       - name: Install mingw-w64 (for Windows cross-compile)
         if: matrix.goos == 'windows'

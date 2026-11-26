@@ -76,6 +76,7 @@ For each activity, the app will:
 
 - Go 1.24+
 - GCC (for Fyne/CGO)
+- Linux: `libgl-dev`, `xorg-dev`, `libxxf86vm-dev`, `libwayland-dev`, `libxkbcommon-dev`, `libegl-dev`
 - Windows cross-compile from Linux: `mingw-w64`, `libgl-dev`, `xorg-dev`, `libxxf86vm-dev`
 
 ### Build
