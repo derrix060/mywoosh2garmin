@@ -31,8 +31,18 @@ Grab the latest release for your platform from the [**Releases**](../../releases
 |---|---|
 | Windows | `mywhoosh2garmin-windows-amd64.exe` |
 | Linux | `mywhoosh2garmin-linux-amd64` |
+| macOS (Apple Silicon and Intel) | `mywhoosh2garmin-macos.zip` |
 
 No installation needed — just download and run.
+
+### macOS
+
+1. Download `mywhoosh2garmin-macos.zip` and double-click it to unzip `MyWhoosh2Garmin.app`.
+2. Move `MyWhoosh2Garmin.app` to your **Applications** folder.
+3. The app is not notarized by Apple, so the first launch is blocked with a warning. Either:
+   - open **System Settings → Privacy & Security**, scroll down and click **Open Anyway** next to the MyWhoosh2Garmin message, or
+   - run `xattr -dr com.apple.quarantine /Applications/MyWhoosh2Garmin.app` in Terminal.
+4. Launch it from Applications or Spotlight. Later launches need no extra steps.
 
 ## How to Use
 
@@ -77,6 +87,7 @@ For each activity, the app will:
 - Go 1.24+
 - GCC (for Fyne/CGO)
 - Linux: `libgl-dev`, `xorg-dev`, `libxxf86vm-dev`, `libwayland-dev`, `libxkbcommon-dev`, `libegl-dev`
+- macOS: Xcode Command Line Tools (`xcode-select --install`)
 - Windows cross-compile from Linux: `mingw-w64`, `libgl-dev`, `xorg-dev`, `libxxf86vm-dev`
 
 ### Build
@@ -84,6 +95,9 @@ For each activity, the app will:
 ```bash
 # Linux
 go build -o mywhoosh2garmin .
+
+# macOS universal app bundle → dist/MyWhoosh2Garmin.app and dist/mywhoosh2garmin-macos.zip
+make app
 
 # Both platforms (requires mingw-w64)
 ./build.sh
